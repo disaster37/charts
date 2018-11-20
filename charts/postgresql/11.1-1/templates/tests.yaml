@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "mariadb.fullname" . }}-tests
+  name: {{ template "postgresql.fullname" . }}-tests
 data:
   run.sh: |-
     @test "Testing PostgreSQL is accessible" {
-      PGPASSWORD=$POSTGRES_PASSWORD pgsql -h {{ template "mariadb.fullname" . }} -U $POSTGRES_USER -d $POSTGRES_DB  -c 'show databases;'
+      PGPASSWORD=$POSTGRES_PASSWORD pgsql -h {{ template "postgresql.fullname" . }} -U $POSTGRES_USER -d $POSTGRES_DB  -c 'show databases;'
     }
