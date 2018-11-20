@@ -1,0 +1,14 @@
+name: ghost
+version: 2.6.0-1
+appVersion: 2.6.0
+description: Ghost is a free and open source blogging platform written in JavaScript
+keywords:
+- blog
+home: https://github.com/TryGhost/Ghost
+icon: https://user-images.githubusercontent.com/120485/43974508-b64b2fe8-9cd2-11e8-8e58-707254b8817c.png
+sources:
+- https://github.com/TryGhost/Ghost
+maintainers:
+- name: Ghost
+  email: ghost@ghost.com
+engine: gotpl

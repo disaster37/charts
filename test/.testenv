@@ -1,5 +1,5 @@
 # The name of the Git remote to check against for changed charts
-REMOTE=rancher-charts
+REMOTE=origin
 
 # The name of the Git target branch
 TARGET_BRANCH=master
@@ -7,7 +7,6 @@ TARGET_BRANCH=master
 # Chart directories separated by a space
 CHART_DIRS=(
     charts
-    proposed
 )
 
 # Charts that should be skipped

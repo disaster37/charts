@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "postgresql.fullname" . }}
+  labels:
+    app: "{{ template "postgresql.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      release: "{{ .Release.Name }}"
+      app: "{{ template "postgresql.fullname" . }}"
+  serviceName: "{{ template "postgresql.fullname" . }}"
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      {{- if .Values.annotations }}
+      annotations:
+        {{- range .Values.annotations }}
+        {{ .key }}: '{{ .value }}'
+        {{- end }}
+      {{- end }}
+      labels:
+        app: "{{ template "postgresql.fullname" . }}"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+      terminationGracePeriodSeconds: 30
+      affinity: {{ .Values.affinity }}
+      containers:
+      - name: "postgresql"
+        image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/pgdata"
+        - name: POSTGRES_DB
+          value: "{{ .Values.db.name }}""
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.fullname" . }}
+              key: postgresql-password
+        - name: POSTGRES_USER
+          value: "{{ .Values.db.user }}""
+        ports:
+        - name: postgresql
+          containerPort: 5432
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready -U {{ .Values.db.user | quote }} --host $POD_IP
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready -U {{ .Values.db.user | quote }} --host $POD_IP
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        resources: {{ .Values.resources }}
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data/pgdata
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ template "postgresql.fullname" . }}

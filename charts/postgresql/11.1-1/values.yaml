@@ -1,0 +1,48 @@
+image:
+  name: postgres
+  tag: 11.1-alpine
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+
+annotations:
+affinity:
+
+db:
+  ## PostgreSQL username and password
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb#creating-a-database-user-on-first-run
+  ##
+  user:
+  password:
+  ## Password is ignored if existingSecret is specified.
+  ## Database to create
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb#creating-a-database-on-first-run
+  ##
+  name:
+
+livenessProbe:
+  enabled: true
+  ##
+  ## Initializing the database could take some time
+  initialDelaySeconds: 120
+  ##
+  ## Default Kubernetes values
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  ##
+  ## Default Kubernetes values
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+storage:
+  class:
+  size: 8Gi
