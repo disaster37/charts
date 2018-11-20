@@ -24,9 +24,6 @@ spec:
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
-      securityContext:
-        runAsUser: 70
-        fsGroup: 70
       terminationGracePeriodSeconds: 30
       containers:
       - name: postgresql
