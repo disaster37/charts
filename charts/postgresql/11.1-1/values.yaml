@@ -10,6 +10,14 @@ image:
 annotations:
 
 affinity:
+#  nodeAffinity:
+#    requiredDuringSchedulingIgnoredDuringExecution:
+#      nodeSelectorTerms:
+#      - matchExpressions:
+#        - key: env
+#          operator: In
+#          values:
+#          - prd
 
 db:
   ## PostgreSQL username and password

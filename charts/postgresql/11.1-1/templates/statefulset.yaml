@@ -25,6 +25,14 @@ spec:
         heritage: "{{ .Release.Service }}"
     spec:
       terminationGracePeriodSeconds: 30
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       containers:
       - name: postgresql
         image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
@@ -68,7 +76,8 @@ spec:
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
-        resources: {{ .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data/pgdata
