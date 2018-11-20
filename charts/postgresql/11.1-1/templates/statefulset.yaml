@@ -35,7 +35,8 @@ spec:
         fsGroup: 1001
       terminationGracePeriodSeconds: 30
       {{- if .Values.affinity }}
-      affinity: {{ .Values.affinity }}
+      affinity:
+        {{ toYaml .Values.affinity | indent 8 }}
       {{- end }}
       containers:
       - name: postgresql
