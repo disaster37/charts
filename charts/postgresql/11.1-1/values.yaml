@@ -25,9 +25,7 @@ db:
 
 livenessProbe:
   enabled: true
-  ##
-  ## Initializing the database could take some time
-  initialDelaySeconds: 120
+  initialDelaySeconds: 30
   ##
   ## Default Kubernetes values
   periodSeconds: 10
