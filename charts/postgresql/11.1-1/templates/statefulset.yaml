@@ -34,10 +34,6 @@ spec:
         runAsUser: 1001
         fsGroup: 1001
       terminationGracePeriodSeconds: 30
-      {{- if .Values.affinity }}
-      affinity:
-        {{ toYaml .Values.affinity | indent 8 }}
-      {{- end }}
       containers:
       - name: postgresql
         image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
