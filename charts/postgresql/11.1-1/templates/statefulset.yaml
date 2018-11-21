@@ -54,6 +54,10 @@ spec:
         ports:
         - name: postgresql
           containerPort: 5432
+        {{- with .Values.tolerations }}
+        resources:
+{{ toYaml .Values.tolerations | indent 10 }}
+        {{- end }}
         livenessProbe:
           exec:
             command:

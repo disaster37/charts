@@ -7,7 +7,15 @@ image:
   ##
   pullPolicy: IfNotPresent
 
-annotations:
+tolerations:
+
+resources:
+#  limits:
+#    cpu: "500m"
+#    memory: 1Gi
+#  requests:
+#    cpu: "500m"
+#    memory: 1Gi
 
 affinity:
 #  nodeAffinity:
@@ -31,6 +39,10 @@ db:
   ##
   name:
 
+storage:
+  class:
+  size: 8Gi
+
 livenessProbe:
   enabled: true
   initialDelaySeconds: 30
@@ -50,6 +62,3 @@ readinessProbe:
   successThreshold: 1
   failureThreshold: 3
 
-storage:
-  class:
-  size: 8Gi
