@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ template "postgresql.fullname" . }}
   labels:
@@ -12,10 +12,7 @@ spec:
     matchLabels:
       release: "{{ .Release.Name }}"
       app: "{{ template "postgresql.fullname" . }}"
-  serviceName: "{{ template "postgresql.fullname" . }}"
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   template:
     metadata:
       labels:
