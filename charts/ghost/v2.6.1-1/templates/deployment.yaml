@@ -16,9 +16,11 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       terminationGracePeriodSeconds: 30
+      {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
-      {{- with .Values.tolerations }}
+      {{- end }}
+      {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
       {{- end }}
@@ -67,8 +69,10 @@ spec:
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+        {{- end}}
         volumeMounts:
         - name: ghost-data
           mountPath: /var/lib/ghost

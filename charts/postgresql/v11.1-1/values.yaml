@@ -7,9 +7,9 @@ image:
   ##
   pullPolicy: IfNotPresent
 
-tolerations:
+tolerations: []
 
-resources:
+#resources:
 #  limits:
 #    cpu: "500m"
 #    memory: 1Gi
@@ -17,7 +17,7 @@ resources:
 #    cpu: "500m"
 #    memory: 1Gi
 
-affinity:
+#affinity:
 #  nodeAffinity:
 #    requiredDuringSchedulingIgnoredDuringExecution:
 #      nodeSelectorTerms:
