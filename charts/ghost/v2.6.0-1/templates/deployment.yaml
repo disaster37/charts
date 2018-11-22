@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "ghost.fullname" . }}
+  labels:
+    app: {{ template "ghost.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "ghost.fullname" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      terminationGracePeriodSeconds: 30
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ template "ghost.fullname" . }}
+        image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        - name: url
+          value: "https://{{ .Values.ghost.dns }}"
+        - name: database
+          value: pg
+        - name: database__connection__host
+          value: {{ template "ghost.postgresql.fullname" . }}
+        - name: database__connection__port
+          value: "5432"
+        - name: database__connection__database
+          value: {{ .Values.postgresql.db.name | quote }}
+        - name: database__connection__user
+          value: {{ .Values.postgresql.db.user | quote }}
+        - name: database__connection__password
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "ghost.postgresql.fullname" . }}
+              key: postgrtesql-password
+        - name: NODE_ENV
+          value: "production"
+        ports:
+        - name: ghost
+          containerPort: 2368
+        livenessProbe:
+          httpGet:
+            path: /
+            port: ghost
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: ghost
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: ghost-data
+          mountPath: /var/lib/ghost
+      volumes:
+      - name: ghost-data
+        persistentVolumeClaim:
+          claimName: {{ template "ghost.fullname" . }}

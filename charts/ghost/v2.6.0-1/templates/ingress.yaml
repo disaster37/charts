@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "ghost.fullname" . }}
+  labels:
+    app: {{ template "ghost.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    kubernetes.io/tls-acme: 'true'
+spec:
+  rules:
+  - host: {{ .Values.ghost.dns }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "ghost.fullname" . }}
+          servicePort: 2368
+  tls:
+  - hosts:
+    - {{ .Values.ghost.dns }}
+    secretName: {{ template "ghost.fullname" . }}-tls
