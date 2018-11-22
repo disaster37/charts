@@ -51,7 +51,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "ghost.postgresql.fullname" . }}
-              key: postgrtesql-password
+              key: postgresql-password
         - name: NODE_ENV
           value: "production"
         ports:
