@@ -61,6 +61,9 @@ spec:
           httpGet:
             path: /
             port: ghost
+            httpHeaders:
+            - name: Host
+              value: "127.0.0.1"
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -70,6 +73,9 @@ spec:
           httpGet:
             path: /
             port: ghost
+            httpHeaders:
+            - name: Host
+              value: "127.0.0.1"
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
