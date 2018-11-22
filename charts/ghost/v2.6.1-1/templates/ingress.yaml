@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: {{ template "ghost.fullname" . }}
   labels:
-    app: {{ template "ghost.fullname" . }}
+    app: "{{ template "ghost.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

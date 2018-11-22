@@ -3,17 +3,23 @@ kind: Deployment
 metadata:
   name: {{ template "ghost.fullname" . }}
   labels:
-    app: {{ template "ghost.fullname" . }}
+    app: "{{ template "ghost.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      release: "{{ .Release.Name }}"
+      app: "{{ template "postgresql.fullname" . }}"
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "ghost.fullname" . }}
+        app: "{{ template "ghost.fullname" . }}"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
     spec:
       terminationGracePeriodSeconds: 30
       {{- if .Values.affinity }}
@@ -25,7 +31,7 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       containers:
-      - name: {{ template "ghost.fullname" . }}
+      - name: ghost
         image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
