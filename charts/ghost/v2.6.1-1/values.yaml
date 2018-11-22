@@ -11,6 +11,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
 
+#certIssuer: 
 
 ghost:
   dns:
@@ -43,8 +44,7 @@ storage:
   size: 5Gi
 
 livenessProbe:
-  enabled: true
-  initialDelaySeconds: 30
+  initialDelaySeconds: 120
   ##
   ## Default Kubernetes values
   periodSeconds: 10
@@ -52,7 +52,6 @@ livenessProbe:
   successThreshold: 1
   failureThreshold: 3
 readinessProbe:
-  enabled: true
   initialDelaySeconds: 30
   ##
   ## Default Kubernetes values

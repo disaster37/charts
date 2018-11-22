@@ -9,6 +9,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
   annotations:
     kubernetes.io/tls-acme: 'true'
+    {{- if .Values.certIssuer }}
+    certmanager.k8s.io/cluster-issuer: {{ .Values.certIssuer | quote }}
+    {{- end }}
 spec:
   rules:
   - host: {{ .Values.ghost.dns }}
