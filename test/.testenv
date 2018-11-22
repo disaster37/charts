@@ -1,5 +1,5 @@
 # The name of the Git remote to check against for changed charts
-REMOTE=origin
+REMOTE=rancher-charts
 
 # The name of the Git target branch
 TARGET_BRANCH=master
