@@ -22,10 +22,8 @@ spec:
         heritage: "{{ .Release.Service }}"
     spec:
       terminationGracePeriodSeconds: 30
-      {{- with .Values.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-      {{- end }}
+{{ toYaml .Values.affinity | indent 8 }}
       {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}

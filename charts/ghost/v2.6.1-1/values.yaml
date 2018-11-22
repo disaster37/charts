@@ -24,6 +24,9 @@ resources:
   requests:
     memory: 512Mi
     cpu: 300m
+   limits:
+    memory: 512Mi
+    cpu: 300m
 
 affinity:
 #  nodeAffinity:
@@ -38,6 +41,25 @@ affinity:
 storage:
   class:
   size: 5Gi
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  ##
+  ## Default Kubernetes values
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  ##
+  ## Default Kubernetes values
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
 
 ##
 ## PostgreSQL chart configuration
