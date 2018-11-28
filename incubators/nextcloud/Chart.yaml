@@ -1,0 +1,18 @@
+name: nextcloud
+version: 14-1
+appVersion: 14
+description: A file sharing server that puts the control and security of your own data back into your hands.
+keywords:
+- nextcloud
+- storage
+- http
+- web
+- php
+home: https://nextcloud.com/
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Nextcloud_Logo.svg/220px-Nextcloud_Logo.svg.png
+sources:
+- https://github.com/Wonderfall/docker-nextcloud
+maintainers:
+- name: disaster37
+  email: linuxworkgroup@hotmail.com
+engine: gotpl
