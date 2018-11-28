@@ -101,13 +101,13 @@ spec:
         {{- end }}
         - name: DB_NAME
         {{- if .Values.postgresql.enabled }}
-          value: {{ .Values.postgresql.db.name | quote }}
+          value: {{ .Values.postgresql.postgresqlDatabase | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.database | quote }}
         {{- end }}
         - name: DB_USER
         {{- if .Values.postgresql.enabled }}
-          value: {{ .Values.postgresql.db.user | quote }}
+          value: {{ .Values.postgresql.postgresqlUsername | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.user | quote }}
         {{- end }}
@@ -115,7 +115,7 @@ spec:
         {{- if .Values.postgresql.enabled }}
           valueFrom:
             secretKeyRef:
-              name: {{ template "app.mariadb.fullname" . }}
+              name: {{ template "app.postgresql.fullname" . }}
               key: postgresql-password
         {{- else }}
           valueFrom:
@@ -130,9 +130,6 @@ spec:
           httpGet:
             path: /
             port: http
-            httpHeaders:
-            - name: Host
-              value: {{ include "app.host" . | quote }}
           initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
@@ -140,9 +137,6 @@ spec:
           httpGet:
             path: /
             port: http
-            httpHeaders:
-            - name: Host
-              value: {{ include "app.host" . | quote }}
           initialDelaySeconds: 30
           timeoutSeconds: 3
           periodSeconds: 5
