@@ -44,13 +44,6 @@ Note, returns 127.0.0.1 if using ClusterIP.
 {{- end -}}
 {{- end -}}
 
-{{/*
-Gets the host to be used for this application.
-If not using ClusterIP, or if a host or LoadBalancerIP is not defined, the value will be empty.
-*/}}
-{{- define "app.host" -}}
-{{- default "" -}}
-{{- end -}}
 
 {{/*
 Create chart name and version as used by the chart label.
