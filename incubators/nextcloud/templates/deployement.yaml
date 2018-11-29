@@ -32,7 +32,9 @@ spec:
       - name: wait-db
         image: {{ template "app.waitDB.image" . }}
         imagePullPolicy: "{{ .Values.waitDB.image.pullPolicy }}"
-        command: ['sh', '-c', 'pg_isready -h {{ template "app.postgresql.fullname" . }}  -p 5432 && echo $?']
+        command: ['sh', '-c', 
+          'until pg_isready -h {{ template "app.postgresql.fullname" . }} -p 5432; 
+          do echo waiting for database; sleep 2; done;'] 
       {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

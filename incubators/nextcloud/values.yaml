@@ -41,7 +41,7 @@ volumePermissions:
 waitDB:
   image:
     registry: docker.io
-    repository: postgresql
+    repository: postgres
     tag: latest
     pullPolicy: Always
 
