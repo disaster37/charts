@@ -34,6 +34,17 @@ volumePermissions:
     tag: latest
     pullPolicy: Always
 
+##
+## Wait db container parameters:
+## Wait db is online
+##
+waitDB:
+  image:
+    registry: docker.io
+    repository: postgresql
+    tag: latest
+    pullPolicy: Always
+
 ## Domain to use during the Nextcloud setup
 ## ref: https://github.com/Wonderfall/docker-nextcloud
 ##

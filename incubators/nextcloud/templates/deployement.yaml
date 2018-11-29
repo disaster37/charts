@@ -28,6 +28,12 @@ spec:
         volumeMounts:
         - mountPath: {{ .Values.persistence.path }}
           name: nextcloud-data
+      {{- if .Values.postgresql.enabled }}
+      - name: wait-db
+        image: {{ template "app.waitDB.image" . }}
+        imagePullPolicy: "{{ .Values.waitDB.image.pullPolicy }}"
+        command: ['sh', '-c', 'pg_isready -h {{ template "app.postgresql.fullname" . }}  -p 5432 && echo $?']
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
