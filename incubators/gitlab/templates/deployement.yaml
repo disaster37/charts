@@ -1,0 +1,165 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "app.fullname" . }}
+  labels:
+    app: {{ template "app.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "app.fullname" . }}
+      release: "{{ .Release.Name }}"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "app.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      initContainers:
+      - name: volume-permissions
+        image: {{ template "app.volumePermissions.image" . }}
+        imagePullPolicy: "{{ .Values.volumePermissions.image.pullPolicy }}"
+        command: ['sh', '-c', 'chmod -R g+rwX {{ .Values.persistence.path }}']
+        volumeMounts:
+        - mountPath: {{ .Values.persistence.path }}
+          name: nextcloud-data
+      {{- if .Values.postgresql.enabled }}
+      - name: wait-db
+        image: {{ template "app.waitDB.image" . }}
+        imagePullPolicy: "{{ .Values.waitDB.image.pullPolicy }}"
+        command: ['sh', '-c', 
+          'until pg_isready -h {{ template "app.postgresql.fullname" . }} -p 5432; 
+          do echo waiting for database; sleep 2; done;'] 
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+      containers:
+      - name: {{ template "app.fullname" . }}
+        image: {{ template "app.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        - name: UID
+          value: {{ .Values.uid | quote }}
+        - name: GID
+          value: {{ .Values.gid | quote }}
+        - name: UPLOAD_MAX_SIZE
+          value: {{ .Values.uploadMaxSize | quote }}
+        - name: APC_SHM_SIZE
+          value: {{ .Values.apcShmSize | quote }}
+        - name: OPCACHE_MEM_SIZE
+          value: {{ .Values.opcacheMemSize | quote }}
+        - name: MEMORY_LIMIT
+          value: {{ .Values.memoryLimit | quote }}
+        - name: CRON_PERIOD
+          value: {{ .Values.cronPeriod | quote }}
+        - name: CRON_MEMORY_LIMIT
+          value: {{ .Values.cronMemoryLimit | quote }}
+        - name: TZ
+          value: {{ .Values.tz | quote }}
+        - name: ADMIN_USER
+          value: {{ .Values.adminUser | quote }}
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "app.fullname" . }}
+              key: nextcloud-password
+        - name: DOMAIN
+          value: {{ .Values.domain | quote }}
+        - name: DB_TYPE
+        {{- if .Values.postgresql.enabled }}
+          value: pgsql
+        {{- else }}
+          value: {{ .Values.externalDatabase.type | quote }}
+        {{- end }}
+        - name: DB_HOST
+        {{- if .Values.postgresql.enabled }}
+          value: {{ template "app.postgresql.fullname" . }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.host | quote }}
+        {{- end }}
+        - name: DB_NAME
+        {{- if .Values.postgresql.enabled }}
+          value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.database | quote }}
+        {{- end }}
+        - name: DB_USER
+        {{- if .Values.postgresql.enabled }}
+          value: {{ .Values.postgresql.postgresqlUsername | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.user | quote }}
+        {{- end }}
+        - name: DB_PASSWORD
+        {{- if .Values.postgresql.enabled }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "app.postgresql.fullname" . }}
+              key: postgresql-password
+        {{- else }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "externalDatabase.fullname" . }}
+              key: db-password
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: 8888
+        livenessProbe:
+          tcpSocket:
+            port: http
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+          failureThreshold: 6
+        readinessProbe:
+          tcpSocket:
+            port: http
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: nextcloud-data
+          mountPath: /data
+          subPath: data
+        - name: nextcloud-data
+          mountPath: /config
+          subPath: config
+        - name: nextcloud-data
+          mountPath: /nextcloud/themes
+          subPath: theme
+        - name: nextcloud-data
+          mountPath: /apps2
+          subPath: app
+      volumes:
+      - name: nextcloud-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "app.fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

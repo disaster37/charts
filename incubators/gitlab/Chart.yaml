@@ -1,0 +1,15 @@
+name: gitlab
+version: 11.5.1-1
+appVersion: 11.5.1
+description: A Git repository.
+keywords:
+- gitlab
+- git
+home: https://gitlab.com/
+icon: https://d33np9n32j53g7.cloudfront.net/assets/stacks/gitlab/img/gitlab-stack-110x117-de8ce93147febe58befc270989894c65.png
+sources:
+- https://github.com/sameersbn/docker-gitlab
+maintainers:
+- name: disaster37
+  email: linuxworkgroup@hotmail.com
+engine: gotpl

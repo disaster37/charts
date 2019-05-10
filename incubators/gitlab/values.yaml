@@ -1,0 +1,415 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
+## Gitlab image version
+## ref: https://hub.docker.com/r/sameersbn/gitlab/tags/
+##
+image:
+  registry: docker.io
+  repository: sameersbn/gitlab
+  tag: 11.5.1
+  ## Specify a imagePullPolicy
+  ## Defaults to 'IfNotPresent'. You can set to 'Always'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+
+##
+## Init containers parameters:
+## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
+##
+volumePermissions:
+  image:
+    registry: docker.io
+    repository: bitnami/minideb
+    tag: latest
+    pullPolicy: Always
+
+##
+## Wait db container parameters:
+## Wait db is online
+##
+waitDB:
+  image:
+    registry: docker.io
+    repository: postgres
+    tag: latest
+    pullPolicy: Always
+
+## Schedule backup
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+gitlabBackupSchedule: 
+
+
+## Gitlab FQDN
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+gitlabHost: localhost
+
+## Use https instadead http when access ton gitlab.
+## You need to set `true`if you access on gitlab with https over ingress or LoadBalancer.
+## Defaults to `false`
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+gitlabHttps: false
+
+
+## Gitlab user id
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+USERMAP_UID: 1000
+
+## Gitlab group id
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+USERMAP_GID: 1000
+
+
+## Maximum upload size in Gitlab
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+#gitlabMaxObjectSize:
+
+## Gitlab root password
+## If not set, it's generate random password that you can retrive on secret.
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+#gitlabRootPassword:
+
+## Encryption key for GitLab CI secret variables, as well as import credentials, in the database.
+## Ensure that your key is at least 32 characters long and that you don't lose it. You can generate one using pwgen -Bsv1 64.
+## If not set, It's generate random key that you can retrive on secret.
+## ref: ref: https://github.com/sameersbn/docker-gitlab
+##
+# gitlabSecretsDbKeyBase:
+
+## Encryption key for OTP related stuff with GitLab. Ensure that your key is at least 64 characters long and that you don't lose it. 
+## If you lose or change this secret, 2FA will stop working for all users. 
+## You can generate one using pwgen -Bsv1 64
+## If not set, It's generate random key that you can retrive on secret.
+## ref: ref: https://github.com/sameersbn/docker-gitlab
+##
+# gitlabSecretsOtpKeyBase:
+
+## Encryption key for session secrets. Ensure that your key is at least 64 characters long and that you don't lose it. 
+## This secret can be rotated with minimal impact - the main effect is that previously-sent password reset emails will no longer work. 
+## You can generate one using pwgen -Bsv1 64
+## If not set, It's generate random key that you can retrive on secret.
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# gitlabSecretsSecretKeyBase:
+
+## Enable or disable user signups (first run only).
+## Defaut ot `false`.
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+gitlabSignupEnabled: false
+
+## Sets the timeout of unicorn worker processes. 
+## Defaults to 60 seconds.
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+unicornTimeout: 60
+
+## Configure the timezone for the gitlab application. 
+## This configuration does not effect cron jobs. 
+## Defaults to UTC
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+gitlabTimezone: Etc/UTC
+
+## Set to true when using self signed ssl certificates.
+## Defaults to false.
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+sslSelfSigned: false
+
+## The ssh port number.
+## Defaults to 10022.
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+gitlabSshPort: 10022
+
+## Specifies if LDAP server is Active Directory LDAP server. 
+## If your LDAP server is not AD, set this to false. Defaults to true
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# ldapActiveDirectory: true
+
+## Base where we can search for users. No default.
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# ldapBase:
+
+## The user to use when browse LDAP
+## No default.
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# ldapBindDn:
+
+## Enable LDAP. 
+## Defaults to false
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+ldapEnabled: false
+
+## LDAP Host
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# ldapHost:
+
+## LDAP password
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# ldapPass:
+
+## Timeout, in seconds, for LDAP queries. Defaults to 10
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# ldapTimeout:
+
+## LDAP UID. Defaults to sAMAccountName
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# ldapUid:
+
+## Filter LDAP users. No default.
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# ldapUserFilter:
+
+## Enable mail delivery via SMTP.
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+smtpEnabled: false
+
+## SMTP server host. Defaults to smtp.gmail.com
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# smtpHost:
+
+## SMTP username
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# smtpUser:
+
+## SMTP password
+## ref: https://github.com/sameersbn/docker-gitlab
+##
+# smtpPass:
+
+##
+## External database configuration
+##
+externalDatabase:
+  ## Database host
+  # host:
+
+  ## Database port
+  # port:
+
+  ## Database user
+  # user: gitlab
+
+  ## Database password
+  # password:
+
+  ## Database name
+  # database: gitlab
+  
+  ## Database type
+  # type: postgresql
+
+##
+## PostgreSQL chart configuration
+##
+## https://github.com/helm/charts/blob/master/stable/postgresql/values.yaml
+##
+postgresql:
+  ## Whether to deploy a postgresql server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: true
+  ## Disable Postgresql replication
+  replication:
+    enabled: false
+
+  ## Create a database and a database user
+  ## 
+  ##
+  postgresqlDatabase: gitlab
+  postgresqlUsername: gitlab
+  #postgresqlPassword:
+  
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    ## Postgresql data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+  ## Node, affinity and tolerations labels for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 1024Mi
+      cpu: 500m
+
+
+##
+## External Redis configuration
+##
+externalRedis:
+  ## Redis host
+  # host:
+
+  ## Redis port
+  # port:
+
+  ## Redis password
+  # password:
+
+##
+## Redis chart configuration
+##
+## https://github.com/helm/charts/blob/master/stable/postgresql/values.yaml
+##
+redis:
+  ## Whether to deploy a redis server to satisfy the applications cache requirements. To use an external redis set this to false and configure the externalRedis parameters
+  enabled: true
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## If you use ingress, you should set ClusterIP
+##
+service:
+  type: LoadBalancer
+  # HTTP Port
+  port: 80
+  ## loadBalancerIP:
+  ##
+  ## nodePorts:
+  ##   http: <to set explicitly, choose port between 30000-32767>
+  nodePorts:
+    http: ""
+  ## Enable client source IP preservation
+  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
+
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## Nextcloud data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 500m
+  limits:
+    memory: 1024Mi
+    cpu: 1000m
+
+## Node, affinity and tolerations labels for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+affinity: {}
+tolerations: []
+
+## Optional duration in seconds the pod needs to terminate gracefully.
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
+##
+terminationGracePeriodSeconds: 30
+
+## Configure the ingress resource that allows you to access the
+## Nextcloud installation. Set up the URL
+## ref: http://kubernetes.io/docs/user-guide/ingress/
+##
+ingress:
+  ## Set to true to enable ingress record generation
+  enabled: false
+
+  ## The list of hostnames to be covered with this ingress record.
+  ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
+  hosts:
+  - name: gitlab.local
+
+    ## Set this to true in order to enable TLS on the ingress record
+    ## A side effect of this will be that the backend ghost service will be connected at port 443
+    tls: false
+
+    ## Set this to true in order to add the corresponding annotations for cert-manager
+    certManager: false
+
+    ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
+    tlsSecret: gitlab.local-tls
+
+    ## Ingress annotations done as key:value pairs
+    ## For a full list of possible ingress annotations, please see
+    ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+    ##
+    ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
+    annotations:
+    #  kubernetes.io/ingress.class: nginx
+    #  certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+
+  secrets:
+  ## If you're providing your own certificates, please use this to add the certificates as secrets
+  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
+  ## -----BEGIN RSA PRIVATE KEY-----
+  ##
+  ## name should line up with a tlsSecret set further up
+  ## If you're using cert-manager, this is unneeded, as it will create the secret for you if it is not set
+  ##
+  ## It is also possible to create and manage the certificates outside of this helm chart
+  ## Please see README.md for more information
+  # - name: ghost.local-tls
+  #   key:
+#   certificate:
